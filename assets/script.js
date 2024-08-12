@@ -16,3 +16,19 @@ const slides = [
 		"tagLine":"Autocollants <span>avec découpe laser sur mesure</span>"
 	}
 ]
+
+function addDots() {
+	let nb_slides = slides.length
+	let num_dot = 1
+	let dots = document.getElementsByClassName('dots')[0]
+	while (num_dot <= nb_slides) {
+		let dot = document.createElement('button')
+		dot.setAttribute('class','dot')
+		dot.setAttribute('name','slide_'+num_dot)
+		dots.appendChild(dot)
+		num_dot++
+	}
+
+	let dotsObject = document.getElementsByClassName('dot')
+	dotsObject[0].classList.add('dot_selected')
+}
