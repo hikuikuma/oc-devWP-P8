@@ -22,7 +22,7 @@ function addDots() {
 	let num_dot = 1
 	let dots = document.getElementsByClassName('dots')[0]
 	while (num_dot <= nb_slides) {
-		let dot = document.createElement('button')
+		let dot = document.createElement('div')
 		dot.setAttribute('class','dot')
 		dot.setAttribute('name','slide_'+num_dot)
 		dot.setAttribute('onclick','loadSlide('+num_dot+')')
