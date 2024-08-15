@@ -72,3 +72,12 @@ let next = document.getElementsByClassName('arrow_right')[0]
 next.addEventListener('click', () => {navigation(true)})
 let previous = document.getElementsByClassName('arrow_left')[0]
 previous.addEventListener('click', () => {navigation(false)})
+
+document.onkeydown = event => {
+	let code = event.key
+	if (code == 'ArrowRight') {
+		navigation(true)
+	} else if (code == 'ArrowLeft') {
+		navigation(false)
+	}
+}
