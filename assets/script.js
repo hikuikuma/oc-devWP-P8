@@ -1,95 +1,74 @@
 const slides = [
 	{
-		"image":"slide1.jpg",
-		"tagLine":"Impressions tous formats <span>en boutique et en ligne</span>"
+		"image": "slide1.jpg",
+		"tagLine": "Impressions tous formats <span>en boutique et en ligne</span>"
 	},
 	{
-		"image":"slide2.jpg",
-		"tagLine":"Tirages haute définition grand format <span>pour vos bureaux et events</span>"
+		"image": "slide2.jpg",
+		"tagLine": "Tirages haute définition grand format <span>pour vos bureaux et events</span>"
 	},
 	{
-		"image":"slide3.jpg",
-		"tagLine":"Grand choix de couleurs <span>de CMJN aux pantones</span>"
+		"image": "slide3.jpg",
+		"tagLine": "Grand choix de couleurs <span>de CMJN aux pantones</span>"
 	},
 	{
-		"image":"slide4.png",
-		"tagLine":"Autocollants <span>avec découpe laser sur mesure</span>"
+		"image": "slide4.png",
+		"tagLine": "Autocollants <span>avec découpe laser sur mesure</span>"
 	}
 ]
 
+const banner = document.getElementById('banner')
+const slidesNum = slides.length
+
 function addDots() {
-	let nb_slides = slides.length
-	let num_dot = 1
+	let nbSlides = slides.length
 	let dots = document.getElementsByClassName('dots')[0]
-	while (num_dot <= nb_slides) {
+	for (let numDot = 1; numDot <= nbSlides; numDot++) {
 		let dot = document.createElement('div')
-		dot.setAttribute('class','dot')
-		dot.setAttribute('name','slide_'+num_dot)
-		dot.setAttribute('onclick','loadSlide('+num_dot+')')
+		dot.setAttribute('class', 'dot')
+		if (numDot == 1) { dot.classList.add('dot_selected') }
+		dot.setAttribute('name', 'slide_' + numDot)
+		dot.addEventListener('click', () => {loadNewSlide(getCurrentSlide(),numDot - 1)}, false)
 		dots.appendChild(dot)
-		num_dot++
 	}
-
-	let dotsObject = document.getElementsByClassName('dot')
-	dotsObject[0].classList.add('dot_selected')
 }
 
-function previous() {
-	let banner = document.getElementById('banner')
-	let currentDot = document.getElementsByClassName('dot_selected')[0]
-	let currentNb = parseInt(currentDot.getAttribute('name').substring(6))
-	let currentIndex = parseInt(currentNb - 1)
-	let newDot = null
-	let newNb = 4
-	let newIndex = 3
+addDots()
 
-	if (currentIndex != 0) {
-		newNb = currentNb - 1
-		newIndex = currentIndex - 1
-	}
-	newDot = document.getElementsByName("slide_" + newNb)[0]
+function getCurrentSlide() {
+	let oldIndex = parseInt(document.getElementsByClassName('dot_selected')[0].getAttribute('name').substring(6), 10) - 1
+	return oldIndex
+} 
 
-	currentDot.classList.remove('dot_selected')
-	newDot.classList.add('dot_selected')
-
-	banner.getElementsByClassName('banner-img')[0].setAttribute('src', './assets/images/slideshow/' + slides[newIndex].image)
-	banner.getElementsByTagName('p')[0].innerHTML = slides[newIndex].tagLine
-}
-
-function next() {
-	let banner = document.getElementById('banner')
-	let currentDot = document.getElementsByClassName('dot_selected')[0]
-	let currentNb = parseInt(currentDot.getAttribute('name').substring(6))
-	let currentIndex = parseInt(currentNb-1)
-	let newDot = null
-	let newNb = 1
+function navigation(isNext) {
+	let oldIndex = getCurrentSlide()
 	let newIndex = 0
-	
-	if (currentNb != slides.length) {
-		newNb = currentNb+1
-		newIndex = currentIndex+1		
+	let maxIndex = slidesNum - 1
+	if (isNext) {
+		newIndex = oldIndex + 1
+		if (newIndex > maxIndex) {newIndex = 0}		
+	} else {
+		newIndex = oldIndex - 1
+		if (newIndex < 0) {newIndex = maxIndex}
 	}
-	newDot = document.getElementsByName("slide_" + newNb)[0]
 
-	currentDot.classList.remove('dot_selected')
-	newDot.classList.add('dot_selected')
-
-	banner.getElementsByClassName('banner-img')[0].setAttribute('src','./assets/images/slideshow/'+slides[newIndex].image)
-	banner.getElementsByTagName('p')[0].innerHTML = slides[newIndex].tagLine
+	loadNewSlide(oldIndex,newIndex)
 }
 
-function loadSlide(num) {
-	let banner = document.getElementById('banner')
-	let currentDot = document.getElementsByClassName('dot_selected')[0]
-	let currentNb = parseInt(currentDot.getAttribute('name').substring(6))
-	let currentIndex = parseInt(currentNb - 1)
-	let newDot = document.getElementsByName("slide_" + num)[0]
-	let newNb = num
-	let newIndex = num-1
+function loadNewSlide(oldIndex, newIndex) {
+	let oldNum = parseInt(oldIndex + 1, 10)
+	let newNum = parseInt(newIndex + 1, 10)
+	let oldDot = document.getElementsByName('slide_' + oldNum)[0]
+	let newDot = document.getElementsByName('slide_' + newNum)[0]
 
-	currentDot.classList.remove('dot_selected')
+	oldDot.classList.remove('dot_selected')
 	newDot.classList.add('dot_selected')
 
 	banner.getElementsByClassName('banner-img')[0].setAttribute('src', './assets/images/slideshow/' + slides[newIndex].image)
 	banner.getElementsByTagName('p')[0].innerHTML = slides[newIndex].tagLine
 }
+
+let next = document.getElementsByClassName('arrow_right')[0]
+next.addEventListener('click', () => {navigation(true)})
+let previous = document.getElementsByClassName('arrow_left')[0]
+previous.addEventListener('click', () => {navigation(false)})
