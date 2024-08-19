@@ -17,49 +17,75 @@ const slides = [
 	}
 ]
 
+// Retrieving the DOM containing the slideshow
 const banner = document.getElementById('banner')
+// Retrieving the number of slides
 const slidesNum = slides.length
 
+/**
+ * @function addDots
+ * Function to add points at the bottom of the slideshow according to the number of slides and make them clickable
+ */
 function addDots() {
-	let nbSlides = slides.length
-	let dots = document.getElementsByClassName('dots')[0]
+	const nbSlides = slides.length
+	const dots = document.getElementsByClassName('dots')[0]
 	for (let numDot = 1; numDot <= nbSlides; numDot++) {
 		let dot = document.createElement('div')
 		dot.setAttribute('class', 'dot')
-		if (numDot == 1) { dot.classList.add('dot_selected') }
+		if (numDot == 1) dot.classList.add('dot_selected')
 		dot.setAttribute('name', 'slide_' + numDot)
-		dot.addEventListener('click', () => {loadNewSlide(getCurrentSlide(),numDot - 1)}, false)
+		dot.addEventListener('click', () => loadNewSlide(getCurrentSlide(),numDot - 1))
 		dots.appendChild(dot)
 	}
 }
 
+// Add dots on DOM
 addDots()
 
+/**
+ * @function getCurrentSlide
+ * Function to get current slide with subtract 1 to correspond to slides index 
+ * @return {Number} Index of current slide
+ */
 function getCurrentSlide() {
-	let oldIndex = parseInt(document.getElementsByClassName('dot_selected')[0].getAttribute('name').substring(6), 10) - 1
-	return oldIndex
+	const indexAsString = document
+		.getElementsByClassName('dot_selected')[0]
+		.getAttribute('name')
+		.substring(6)
+	return parseInt(indexAsString, 10) - 1
 } 
 
+/**
+ * @function navigation
+ * Function to navigate to next or previous slide
+ * @param {boolean} isNext - True : next slide and false : previous slide
+ */
 function navigation(isNext) {
-	let oldIndex = getCurrentSlide()
+	const oldIndex = getCurrentSlide()
 	let newIndex = 0
-	let maxIndex = slidesNum - 1
+	const maxIndex = slidesNum - 1
 	if (isNext) {
 		newIndex = oldIndex + 1
-		if (newIndex > maxIndex) {newIndex = 0}		
+		if (newIndex > maxIndex) newIndex = 0
 	} else {
 		newIndex = oldIndex - 1
-		if (newIndex < 0) {newIndex = maxIndex}
+		if (newIndex < 0) newIndex = maxIndex
 	}
 
 	loadNewSlide(oldIndex,newIndex)
 }
 
+/**
+ * @function loadNewSlide
+ * Loads a specific slide and unloads the current slide
+ * @param {number} oldIndex - Index of current slide
+ * @param {number} newIndex - Index of the slide to load
+ */
 function loadNewSlide(oldIndex, newIndex) {
-	let oldNum = parseInt(oldIndex + 1, 10)
-	let newNum = parseInt(newIndex + 1, 10)
-	let oldDot = document.getElementsByName('slide_' + oldNum)[0]
-	let newDot = document.getElementsByName('slide_' + newNum)[0]
+	const oldNum = parseInt(oldIndex + 1, 10)
+	const newNum = parseInt(newIndex + 1, 10)
+	const oldDot = document.getElementsByName('slide_' + oldNum)[0]
+	const newDot = document.getElementsByName('slide_' + newNum)[0]
 
 	oldDot.classList.remove('dot_selected')
 	newDot.classList.add('dot_selected')
@@ -68,16 +94,25 @@ function loadNewSlide(oldIndex, newIndex) {
 	banner.getElementsByTagName('p')[0].innerHTML = slides[newIndex].tagLine
 }
 
-let next = document.getElementsByClassName('arrow_right')[0]
-next.addEventListener('click', () => {navigation(true)})
-let previous = document.getElementsByClassName('arrow_left')[0]
-previous.addEventListener('click', () => {navigation(false)})
+/**
+ * @function arrowsListeners
+ * Add event listeners to slideshow arrows
+ */
+function arrowsListeners() {
+	const next = document.getElementsByClassName('arrow_right')[0]
+	next.addEventListener('click', () => {navigation(true)})
+	const previous = document.getElementsByClassName('arrow_left')[0]
+	previous.addEventListener('click', () => {navigation(false)})
+}
 
+arrowsListeners()
+
+// Added listening for right and left directional arrows for slide change
 document.onkeydown = event => {
-	let code = event.key
-	if (code == 'ArrowRight') {
+	const code = event.key
+	if (code === 'ArrowRight') {
 		navigation(true)
-	} else if (code == 'ArrowLeft') {
+	} else if (code === 'ArrowLeft') {
 		navigation(false)
 	}
 }
